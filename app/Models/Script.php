@@ -7,6 +7,13 @@ use Illuminate\Database\Eloquent\Model;
 
 class Script extends Model
 {
-    /** @use HasFactory<\Database\Factories\ScriptFactory> */
     use HasFactory;
+
+    protected $fillable = ['title', 'author'];
+
+    // Egy Scripthez több Entry tartozik
+    public function entries()
+    {
+        return $this->hasMany(Entry::class);
+    }
 }

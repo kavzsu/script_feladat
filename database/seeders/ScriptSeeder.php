@@ -12,6 +12,11 @@ class ScriptSeeder extends Seeder
      */
     public function run(): void
     {
-        //
+        \App\Models\Script::factory()->createMany([
+            ['title' => 'Hamlet', 'author' => 'Shakespeare'],
+            ['title' => 'Romeo és Julia', 'author' => 'Shakespeare'],
+            ['title' => 'Az Ember Tragédiája', 'author' => 'Madach Imre'],
+            ['title' => 'Vizkereszt, vagy amit akartok', 'author' => 'Shakespeare'],
+        ]);
     }
 }

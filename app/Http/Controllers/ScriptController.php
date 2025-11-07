@@ -3,64 +3,47 @@
 namespace App\Http\Controllers;
 
 use App\Models\Script;
-use App\Http\Requests\StoreScriptRequest;
-use App\Http\Requests\UpdateScriptRequest;
+use Illuminate\Http\Request;
 
 class ScriptController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+    // Előadások listázása
     public function index()
     {
-        //
+        $scripts = Script::withCount('entries')->get();
+        return view('scripts.index', compact('scripts'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
+    // Új előadás űrlap
     public function create()
     {
-        //
+        return view('scripts.create');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(StoreScriptRequest $request)
+    // Mentés
+    public function store(Request $request)
     {
-        //
+        $validated = $request->validate([
+            'title' => 'required|min:3|max:150',
+            'author' => 'nullable|min:2|max:150',
+        ]);
+
+        Script::create($validated);
+        return redirect()->route('scripts.index')->with('success', 'Előadás sikeresen létrehozva!');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Script $script)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Script $script)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(UpdateScriptRequest $request, Script $script)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
+    // Törlés
     public function destroy(Script $script)
     {
-        //
+        $script->delete();
+        return redirect()->route('scripts.index')->with('success', 'Előadás törölve!');
+    }
+
+    // Export nézet
+    public function export(Script $script)
+    {
+        $entries = $script->entries()->orderBy('order_no')->get();
+        return view('scripts.export', compact('script', 'entries'));
     }
 }
+
